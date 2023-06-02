@@ -1,17 +1,46 @@
 "use strict";
 
-class Slider{
+class ImgSliderSelectors{
     constructor(){
-    this.headBut = document.querySelector('.headButton')
-    this.headInput = document.querySelector('.headInput')
-    this.mainSlider = document.querySelector('.mainSlider')
-    this.mainImgLine = document.querySelector('.mainImgLine')
-    this.imgS = document.querySelectorAll('.sliderImg')
-    this.buttonBack = document.querySelector('.back')
-    this.buttonNext = document.querySelector('.next')
-    this.points = document.querySelector('.points')
+        this.headBut = querySelectors.headButton
+        this.headInput = querySelectors.headInput
+        this.mainSlider = querySelectors.mainSlider
+        this.mainImgLine = querySelectors.mainImgLine
+        this.imgS = querySelectors.sliderImg
+        this.buttonBack = querySelectors.buttonBack
+        this.buttonNext = querySelectors.buttonNext
+    }
+}
+
+let querySelectors = {
+       headButton : document.querySelector('.headButton'),
+       headInput : document.querySelector('.headInput'),
+       mainSlider : document.querySelector('.mainSlider'),
+       mainImgLine : document.querySelector('.mainImgLine'),
+       sliderImg : document.querySelectorAll('.sliderImg'),
+       buttonBack : document.querySelector('.back'),
+       buttonNext : document.querySelector('.next'),
+}
 
 
+class Timer{
+    constructor(){
+        this.timer = this.timer.bind(this)
+        this.destroyTimer = this.destroyTimer.bind(this)
+    }
+
+    timer(){
+        this.interval = setInterval(slider.logics.nextSlide, 5000)
+    }
+
+    destroyTimer(){
+        clearInterval(this.interval)
+    }
+}
+
+class Sliderlogics{
+    constructor(){
+    this.selectors = new ImgSliderSelectors()
     this.x1 = 0
     this.x2 = 0
     this.offset = 0
@@ -19,61 +48,40 @@ class Slider{
     this.isMouseOn
     this.interval
 
-
-    this.setEvents = this.setEvents.bind(this)
+    this.headButton = this.headButton.bind(this)
     this.pointerDown = this.pointerDown.bind(this)
     this.pointerMove = this.pointerMove.bind(this)
     this.pointerUp = this.pointerUp.bind(this)
     this.backSlide = this.backSlide.bind(this)
     this.nextSlide = this.nextSlide.bind(this)
-    this.timer = this.timer.bind(this)
-    this.destroyTimer = this.destroyTimer.bind(this)
     this.backSlideButton = this.backSlideButton.bind(this)
     this.nextSlideButton = this.nextSlideButton.bind(this)
-    this.headButton = this.headButton.bind(this)
-
-    this.timer()
-    this.setEvents()
-    }
-
-    timer(){
-        this.interval = setInterval(this.nextSlide, 5000)
-    }
-
-    destroyTimer(){
-        clearInterval(this.interval)
-    }
-
-    setEvents(){
-        this.mainSlider.addEventListener('pointerdown', this.pointerDown)
-        this.mainSlider.addEventListener('pointermove', this.pointerMove)
-        this.mainSlider.addEventListener('pointerup',this.pointerUp)
-        this.buttonBack.addEventListener('click', this.backSlideButton)
-        this.buttonNext.addEventListener('click', this.nextSlideButton)
-        this.headBut.addEventListener('click',this.headButton)
     }
 
     headButton(){
-        this.numberOfPictures = this.headInput.value
+        this.numberOfPictures = this.selectors.headInput.value
         if (this.numberOfPictures < 1 || this.numberOfPictures > 3){
             throw new Error("Введите значение от 1 до 3")
         }
         if (this.numberOfPictures == 1){
-            for(let img of this.imgS){
-                img.style.width = 853 + 'px'
-                this.mainImgLine.style.left = -0 + 'px'
+            this.offset = 0
+            this.selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of this.selectors.imgS){
+                img.style.width = 100 + '%'  
             }
         }    
         if (this.numberOfPictures == 2){
-            for(let img of this.imgS){
-                img.style.width = 426.5 + 'px'
-                this.mainImgLine.style.left = -0 + 'px'
+            this.offset = 0
+            this.selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of this.selectors.imgS){
+                img.style.width = 50 + '%' 
             }
         }
         if (this.numberOfPictures == 3){
-            for(let img of this.imgS){
-                img.style.width = 284.3 + 'px'
-                this.mainImgLine.style.left = -0 + 'px'
+            this.offset = 0
+            this.selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of this.selectors.imgS){
+                img.style.width = 33.333 + '%'
             }
         }  
     }
@@ -81,11 +89,11 @@ class Slider{
     pointerDown(event){
         this.isMouseOn = true
         this.x1 = event.screenX
-        this.mainSlider.addEventListener('pointermove', this.pointerMove)
+        this.selectors.mainSlider.addEventListener('pointermove', this.pointerMove)
     }
 
     pointerUp(){
-        this.mainSlider.removeEventListener('pointermove', this.pointerMove)
+        this.selectors.mainSlider.removeEventListener('pointermove', this.pointerMove)
     }
 
     pointerMove(event){
@@ -94,83 +102,96 @@ class Slider{
         if (this.x1 > this.x2){
             this.nextSlide()
             this.isMouseOn = false
-            this.destroyTimer()
-            this.timer()
+            timer.destroyTimer()
+            timer.timer()
         } else if (this.x2 > this.x1){
             this.backSlide()
             this.isMouseOn = false
-            this.destroyTimer()
-            this.timer()
+            timer.destroyTimer()
+            timer.timer()
         }
     }
     }
 
     backSlideButton(){
         this.backSlide()
-        this.destroyTimer()
-        this.timer()
+        timer.destroyTimer()
+        timer.timer()
     }
 
     nextSlideButton(){
         this.nextSlide()
-        this.destroyTimer()
-        this.timer()
+        timer.destroyTimer()
+        timer.timer()
     }
+
 
     backSlide(){
         if (this.numberOfPictures == 1){
-            this.offset -= 853
+            this.offset -= 100
                 if (this.offset < 0){
-                    this.offset = 3412
+                    this.offset = 100 * (this.selectors.imgS.length - 1)
                 }
-        
-                this.mainImgLine.style.left = -this.offset + 'px'
+                this.selectors.mainImgLine.style.left = -this.offset + '%'
             }   
             if (this.numberOfPictures == 2){
-                this.offset -= 426.5
+                this.offset -= 50
                 if (this.offset < 0){
-                    this.offset = 1279.5
+                    this.offset = 50 * (this.selectors.imgS.length - 2)
                 }
-        
-                this.mainImgLine.style.left = -this.offset + 'px'
+                this.selectors.mainImgLine.style.left = -this.offset + '%'
             }
             if (this.numberOfPictures == 3){
-                this.offset -= 284.333
+                this.offset -= 33.33
                 if (this.offset < 0){
-                    this.offset = 568.666
+                    this.offset = 33.33 * (this.selectors.imgS.length - 3)
                 }
-        
-                this.mainImgLine.style.left = -this.offset + 'px'
+                this.selectors.mainImgLine.style.left = -this.offset + '%'
             }
     }
 
     nextSlide(){
         if (this.numberOfPictures == 1){
-            this.offset += 853
-            if (this.offset > 3412){
-                this.offset = 0;
+            this.offset += 100
+            if (this.offset > 100 * (this.selectors.imgS.length - 1)){
+                this.offset = 0
             }
-    
-            this.mainImgLine.style.left = -this.offset + 'px'
+            this.selectors.mainImgLine.style.left = -this.offset + '%'
         }
         if (this.numberOfPictures == 2){
-            this.offset += 426.5
-            if (this.offset > 1279.5){
-                this.offset = 0;
+            this.offset += 50
+            if (this.offset > 50 * (this.selectors.imgS.length - 2)){
+                this.offset = 0
             }
-    
-            this.mainImgLine.style.left = -this.offset + 'px'
+            this.selectors.mainImgLine.style.left = -this.offset + '%'
         }
         if (this.numberOfPictures == 3){
-            this.offset += 284.333
-            if (this.offset > 568.666){
-                this.offset = 0;
+            this.offset += 33.33
+            if (this.offset > 33.33 * (this.selectors.imgS.length - 3)){
+                this.offset = 0
             }
-    
-            this.mainImgLine.style.left = -this.offset + 'px'
+            this.selectors.mainImgLine.style.left = -this.offset + '%'
         }
     }
 }
 
+class ImgSlider{
+    constructor(){
+    this.selectors = new ImgSliderSelectors()
+    this.logics = new Sliderlogics()
+    this.setEvents = this.setEvents.bind(this)
+    this.setEvents()
+}
+    setEvents(){
+        this.selectors.mainSlider.addEventListener('pointerdown', this.logics.pointerDown)
+        this.selectors.mainSlider.addEventListener('pointermove', this.logics.pointerMove)
+        this.selectors.mainSlider.addEventListener('pointerup',this.logics.pointerUp)
+        this.selectors.buttonBack.addEventListener('click', this.logics.backSlideButton)
+        this.selectors.buttonNext.addEventListener('click', this.logics.nextSlideButton)
+        this.selectors.headBut.addEventListener('click', this.logics.headButton)
+    }
+} 
 
-new Slider()
+let slider = new ImgSlider()
+let timer = new Timer()
+timer.timer()
