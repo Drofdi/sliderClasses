@@ -30,7 +30,7 @@ class Timer{
     }
 
     timer(){
-        this.interval = setInterval(slider.logics.nextSlide, 5000)
+        this.interval = setInterval(logics.nextSlide, 5000)
     }
 
     destroyTimer(){
@@ -40,7 +40,7 @@ class Timer{
 
 class Sliderlogics{
     constructor(){
-    this.selectors = new ImgSliderSelectors()
+/*     this.selectors = selectors */
     this.x1 = 0
     this.x2 = 0
     this.offset = 0
@@ -59,28 +59,28 @@ class Sliderlogics{
     }
 
     headButton(){
-        this.numberOfPictures = this.selectors.headInput.value
+        this.numberOfPictures = selectors.headInput.value
         if (this.numberOfPictures < 1 || this.numberOfPictures > 3){
             throw new Error("Введите значение от 1 до 3")
         }
         if (this.numberOfPictures == 1){
             this.offset = 0
-            this.selectors.mainImgLine.style.left = 0 + '%'
-            for(let img of this.selectors.imgS){
+            selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of selectors.imgS){
                 img.style.width = 100 + '%'  
             }
         }    
         if (this.numberOfPictures == 2){
             this.offset = 0
-            this.selectors.mainImgLine.style.left = 0 + '%'
-            for(let img of this.selectors.imgS){
+            selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of selectors.imgS){
                 img.style.width = 50 + '%' 
             }
         }
         if (this.numberOfPictures == 3){
             this.offset = 0
-            this.selectors.mainImgLine.style.left = 0 + '%'
-            for(let img of this.selectors.imgS){
+            selectors.mainImgLine.style.left = 0 + '%'
+            for(let img of selectors.imgS){
                 img.style.width = 33.333 + '%'
             }
         }  
@@ -89,11 +89,11 @@ class Sliderlogics{
     pointerDown(event){
         this.isMouseOn = true
         this.x1 = event.screenX
-        this.selectors.mainSlider.addEventListener('pointermove', this.pointerMove)
+        selectors.mainSlider.addEventListener('pointermove', this.pointerMove)
     }
 
     pointerUp(){
-        this.selectors.mainSlider.removeEventListener('pointermove', this.pointerMove)
+        selectors.mainSlider.removeEventListener('pointermove', this.pointerMove)
     }
 
     pointerMove(event){
@@ -130,68 +130,70 @@ class Sliderlogics{
         if (this.numberOfPictures == 1){
             this.offset -= 100
                 if (this.offset < 0){
-                    this.offset = 100 * (this.selectors.imgS.length - 1)
+                    this.offset = 100 * (selectors.imgS.length - 1)
                 }
-                this.selectors.mainImgLine.style.left = -this.offset + '%'
+                selectors.mainImgLine.style.left = -this.offset + '%'
             }   
             if (this.numberOfPictures == 2){
                 this.offset -= 50
                 if (this.offset < 0){
-                    this.offset = 50 * (this.selectors.imgS.length - 2)
+                    this.offset = 50 * (selectors.imgS.length - 2)
                 }
-                this.selectors.mainImgLine.style.left = -this.offset + '%'
+                selectors.mainImgLine.style.left = -this.offset + '%'
             }
             if (this.numberOfPictures == 3){
                 this.offset -= 33.33
                 if (this.offset < 0){
-                    this.offset = 33.33 * (this.selectors.imgS.length - 3)
+                    this.offset = 33.33 * (selectors.imgS.length - 3)
                 }
-                this.selectors.mainImgLine.style.left = -this.offset + '%'
+                selectors.mainImgLine.style.left = -this.offset + '%'
             }
     }
 
     nextSlide(){
         if (this.numberOfPictures == 1){
             this.offset += 100
-            if (this.offset > 100 * (this.selectors.imgS.length - 1)){
+            if (this.offset > 100 * (selectors.imgS.length - 1)){
                 this.offset = 0
             }
-            this.selectors.mainImgLine.style.left = -this.offset + '%'
+            selectors.mainImgLine.style.left = -this.offset + '%'
         }
         if (this.numberOfPictures == 2){
             this.offset += 50
-            if (this.offset > 50 * (this.selectors.imgS.length - 2)){
+            if (this.offset > 50 * (selectors.imgS.length - 2)){
                 this.offset = 0
             }
-            this.selectors.mainImgLine.style.left = -this.offset + '%'
+            selectors.mainImgLine.style.left = -this.offset + '%'
         }
         if (this.numberOfPictures == 3){
             this.offset += 33.33
-            if (this.offset > 33.33 * (this.selectors.imgS.length - 3)){
+            if (this.offset > 33.33 * (selectors.imgS.length - 3)){
                 this.offset = 0
             }
-            this.selectors.mainImgLine.style.left = -this.offset + '%'
+            selectors.mainImgLine.style.left = -this.offset + '%'
         }
     }
 }
 
 class ImgSlider{
     constructor(){
-    this.selectors = new ImgSliderSelectors()
-    this.logics = new Sliderlogics()
+/*     this.selectors = selectors
+    this.logics = logics */
     this.setEvents = this.setEvents.bind(this)
     this.setEvents()
 }
     setEvents(){
-        this.selectors.mainSlider.addEventListener('pointerdown', this.logics.pointerDown)
-        this.selectors.mainSlider.addEventListener('pointermove', this.logics.pointerMove)
-        this.selectors.mainSlider.addEventListener('pointerup',this.logics.pointerUp)
-        this.selectors.buttonBack.addEventListener('click', this.logics.backSlideButton)
-        this.selectors.buttonNext.addEventListener('click', this.logics.nextSlideButton)
-        this.selectors.headBut.addEventListener('click', this.logics.headButton)
+        selectors.mainSlider.addEventListener('pointerdown', logics.pointerDown)
+        selectors.mainSlider.addEventListener('pointermove', logics.pointerMove)
+        selectors.mainSlider.addEventListener('pointerup',logics.pointerUp)
+        selectors.buttonBack.addEventListener('click', logics.backSlideButton)
+        selectors.buttonNext.addEventListener('click', logics.nextSlideButton)
+        selectors.headBut.addEventListener('click', logics.headButton)
     }
 } 
 
+let logics = new Sliderlogics()
+let selectors = new ImgSliderSelectors()
 let slider = new ImgSlider()
 let timer = new Timer()
 timer.timer()
